@@ -8,7 +8,7 @@ RCT_EXPORT_MODULE()
 - (id)init {
   self = [SceneState alloc];
     
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneWillConnect:) name:UISceneWillConnectNotification object:nil];
+  //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneWillConnect:) name:UISceneWillConnectNotification object:nil];
     
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneDidEnterBackground:) name:UISceneDidEnterBackgroundNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneWillEnterForeground:) name:UISceneWillEnterForegroundNotification object:nil];
@@ -48,10 +48,6 @@ RCT_EXPORT_MODULE()
 
 }*/
 
-- (void)sceneDidConnect:(NSNotification *)sender{
-    [self sendEventWithName:@"onSceneWillConnect" body:nil];
-}
-
 - (void)sceneDidEnterBackground:(NSNotification *)sender{
     [self sendEventWithName:@"onSceneStateChange" body:@"background"];
 }
@@ -89,7 +85,7 @@ RCT_REMAP_METHOD(getCurrentState,
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @["onSceneWillConnect", @"onSceneStateChange"];
+    return @[@"onSceneStateChange"];
 }
 
 + (BOOL)requiresMainQueueSetup {
