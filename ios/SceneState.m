@@ -1,5 +1,5 @@
 #import "SceneState.h"
-#import "RCTUtils.h"
+#import <CarPlay/CarPlay.h>
 
 @implementation SceneState
 
@@ -35,35 +35,24 @@ RCT_EXPORT_MODULE()
             state = @"active";
     }
     
-    return @{@"state": state, @"scene": scene.title};
-    
-    /*UISceneActivationStateUnattached = -1,
-     UISceneActivationStateForegroundActive,
-     UISceneActivationStateForegroundInactive,
-     UISceneActivationStateBackground*/
+    return @{@"state": state, @"isCarPlay": @([scene isKindOfClass:CPTemplateApplicationScene.class])};
+
 }
-
-
-/*+ (void) updateSceneState:(BOOL)isInBackground API_AVAILABLE(ios(13.0)){
-    
-    //[self parseSceneState:getPhoneScene().activationState];
-
-
-}*/
 
 - (void)sceneWillConnect:(NSNotification *)sender{
     UIScene *scene = (UIScene*)sender.object;
-    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"connect", @"scene": scene.title}];
+    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"connect", @"isCarPlay": @([scene isKindOfClass:CPTemplateApplicationScene.class])}];
 }
 
 
-- (void)sceneDidEnterBackground:(NSNotification *)sender{    UIScene *scene = (UIScene*)sender.object;
-    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"background", @"scene": scene.title}];
+- (void)sceneDidEnterBackground:(NSNotification *)sender{
+    UIScene *scene = (UIScene*)sender.object;
+    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"background", @"isCarPlay": @([scene isKindOfClass:CPTemplateApplicationScene.class])}];
 }
 
 - (void)sceneWillEnterForeground:(NSNotification *)sender{
     UIScene *scene = (UIScene*)sender.object;
-    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"active", @"scene": scene.title}];
+    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"active", @"isCarPlay": @([scene isKindOfClass:CPTemplateApplicationScene.class])}];
 }
 
 RCT_REMAP_METHOD(updateSceneState,
@@ -82,7 +71,6 @@ RCT_REMAP_METHOD(getCurrentState,
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        /*[self sendEventWithName:@"onSceneStateChange" body:[self parseSceneState:UIApplication.sharedApplication.delegate.window.windowScene.activationState]];*/
         resolve([self parseSceneState:UIApplication.sharedApplication.delegate.window.windowScene]);
     });
 }
