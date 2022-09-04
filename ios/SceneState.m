@@ -20,19 +20,22 @@ RCT_EXPORT_MODULE()
 }
 
 
-- (NSString *) parseSceneState:(NSInteger)sceneState {
-    switch (sceneState) {
+- (NSDictionary *) parseSceneState:(UIScene*)scene {
+    NSString *state = nil;
+    switch (scene.activationState) {
         case UISceneActivationStateUnattached:
-            return @"background";
+            state = @"background";
         case UISceneActivationStateForegroundActive:
-            return @"active";
+            state = @"active";
         case UISceneActivationStateForegroundInactive:
-            return @"inactive";
+            state = @"inactive";
         case UISceneActivationStateBackground:
-            return @"background";
+            state = @"background";
         default:
-            return @"active";
+            state = @"active";
     }
+    
+    return @{@"state": state, @"scene": scene.title};
     
     /*UISceneActivationStateUnattached = -1,
      UISceneActivationStateForegroundActive,
@@ -49,16 +52,18 @@ RCT_EXPORT_MODULE()
 }*/
 
 - (void)sceneWillConnect:(NSNotification *)sender{
-    [self sendEventWithName:@"onSceneWillConnect" body:@"background"];
+    UIScene *scene = (UIScene*)sender.object;
+    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"connect", @"scene": scene.title}];
 }
 
 
-- (void)sceneDidEnterBackground:(NSNotification *)sender{
-    [self sendEventWithName:@"onSceneStateChange" body:@"background"];
+- (void)sceneDidEnterBackground:(NSNotification *)sender{    UIScene *scene = (UIScene*)sender.object;
+    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"background", @"scene": scene.title}];
 }
 
 - (void)sceneWillEnterForeground:(NSNotification *)sender{
-    [self sendEventWithName:@"onSceneStateChange" body:@"active"];
+    UIScene *scene = (UIScene*)sender.object;
+    [self sendEventWithName:@"onSceneStateChange" body:@{@"state": @"active", @"scene": scene.title}];
 }
 
 RCT_REMAP_METHOD(updateSceneState,
@@ -67,11 +72,8 @@ RCT_REMAP_METHOD(updateSceneState,
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
     
-  if(getPhoneScene() == nil)
-      return resolve(nil);
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self sendEventWithName:@"onSceneStateChange" body:[self parseSceneState:getPhoneScene().activationState]];
+        [self sendEventWithName:@"onSceneStateChange" body:[self parseSceneState:UIApplication.sharedApplication.delegate.window.windowScene]];
     });
 }
 
@@ -79,18 +81,14 @@ RCT_REMAP_METHOD(getCurrentState,
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
-    
-  if(getPhoneScene() == nil)
-      return resolve(nil);
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self sendEventWithName:@"onSceneStateChange" body:[self parseSceneState:getPhoneScene().activationState]];
-        resolve([self parseSceneState:getPhoneScene().activationState]);
+        /*[self sendEventWithName:@"onSceneStateChange" body:[self parseSceneState:UIApplication.sharedApplication.delegate.window.windowScene.activationState]];*/
+        resolve([self parseSceneState:UIApplication.sharedApplication.delegate.window.windowScene]);
     });
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"onSceneWillConnect", @"onSceneStateChange"];
+    return @[@"onSceneStateChange"];
 }
 
 + (BOOL)requiresMainQueueSetup {
