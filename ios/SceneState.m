@@ -8,10 +8,14 @@ RCT_EXPORT_MODULE()
 - (id)init {
   self = [SceneState alloc];
     
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneWillConnect:) name:UISceneWillConnectNotification object:nil];
+    if(@available(iOS 13.0, *)){
     
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneDidEnterBackground:) name:UISceneDidEnterBackgroundNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneWillEnterForeground:) name:UISceneWillEnterForegroundNotification object:nil];
+      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneWillConnect:) name:UISceneWillConnectNotification object:nil];
+        
+      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneDidEnterBackground:) name:UISceneDidEnterBackgroundNotification object:nil];
+      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sceneWillEnterForeground:) name:UISceneWillEnterForegroundNotification object:nil];
+  }
+    
   return self;
 }
 
