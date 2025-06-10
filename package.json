@@ -1,6 +1,6 @@
 {
   "name": "react-native-scene-state",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "React Native Scene State",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -36,13 +36,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/Spicy-Sparks/react-native-scene-state",
-  "author": "Spicy Sparks <marco@spicysparks.com> (https://github.com/Spicy-Sparks)",
+  "repository": "https://www.npmjs.com/package/react-native-scene-state",
+  "author": "React Native Scene State",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Spicy-Sparks/react-native-scene-state/issues"
+    "url": "https://www.npmjs.com/package/react-native-scene-state"
   },
-  "homepage": "https://github.com/Spicy-Sparks/react-native-scene-state#readme",
+  "homepage": "https://www.npmjs.com/package/react-native-scene-state",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
